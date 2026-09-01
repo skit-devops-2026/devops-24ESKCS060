@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="DevOps Weather Dashboard - Live weather metrics, forecasts, and Prometheus telemetry instrumentation.">
+  <title>AtmosphereX · Live DevOps Weather & Telemetry Dashboard</title>
+  
+  <!-- Google Fonts & FontAwesome Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app-background">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <div class="dashboard-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-icon">
+          <i class="fa-solid fa-cloud-sun-rain"></i>
+        </div>
+        <div class="brand-text">
+          <h1>Atmosphere<span>X</span></h1>
+          <p class="tagline">DevOps Weather & Prometheus Telemetry Engine</p>
+        </div>
+      </div>
+
+      <!-- System Telemetry Ticker -->
+      <div class="telemetry-pill">
+        <span class="status-dot"></span>
+        <span id="metrics-status">Prometheus Scraper: Active</span>
+        <span class="divider">|</span>
+        <i class="fa-solid fa-bolt"></i> <span id="latency-val">0ms</span>
+      </div>
+    </header>
+
+    <!-- Controls & Search -->
+    <section class="search-section">
+      <form id="search-form" class="search-box">
+        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+        <input type="text" id="city-input" placeholder="Search city (e.g. London, Tokyo, New York, Delhi)..." autocomplete="off">
+        <button type="submit" class="btn-search">
+          <span>Search</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </form>
+
+      <div class="quick-cities">
+        <span class="quick-label">Presets:</span>
+        <button class="city-chip" data-city="London"><i class="fa-solid fa-city"></i> London</button>
+        <button class="city-chip" data-city="New York"><i class="fa-solid fa-building"></i> New York</button>
+        <button class="city-chip" data-city="Tokyo"><i class="fa-solid fa-torii-gate"></i> Tokyo</button>
+        <button class="city-chip" data-city="Paris"><i class="fa-solid fa-tower-observation"></i> Paris</button>
+        <button class="city-chip" data-city="Delhi"><i class="fa-solid fa-sun"></i> Delhi</button>
+      </div>
+
+      <div class="unit-toggle">
+        <button id="unit-c" class="unit-btn active">°C</button>
+        <button id="unit-f" class="unit-btn">°F</button>
+      </div>
+    </section>
+
+    <!-- Main Grid -->
+    <main class="dashboard-grid">
+      <!-- Current Weather Hero Card -->
+      <div class="card weather-hero-card" id="weather-card">
+        <div class="card-glass-glow"></div>
+        <div class="hero-top">
+          <div>
+            <h2 id="location-name">London, UK</h2>
+            <p id="local-time">Local Time: <span id="clock-display">--:--:--</span></p>
+          </div>
+          <div class="condition-badge">
+            <i id="weather-icon" class="fa-solid fa-cloud-sun"></i>
+            <span id="condition-text">Partly Cloudy</span>
+          </div>
+        </div>
+
+        <div class="hero-body">
+          <div class="temp-display">
+            <span id="temp-val">18</span><span class="deg-symbol">°</span><span id="temp-unit">C</span>
+          </div>
+          <div class="coord-info">
+            <p><i class="fa-solid fa-location-crosshairs"></i> Lat: <span id="lat-val">51.5074</span>, Lon: <span id="lon-val">-0.1278</span></p>
+          </div>
+        </div>
+
+        <!-- Metric Details Row -->
+        <div class="metrics-grid">
+          <div class="metric-item">
+            <i class="fa-solid fa-droplet metric-icon"></i>
+            <div class="metric-info">
+              <span class="metric-label">Humidity</span>
+              <span class="metric-val" id="humidity-val">62%</span>
+            </div>
+          </div>
+          <div class="metric-item">
+            <i class="fa-solid fa-wind metric-icon"></i>
+            <div class="metric-info">
+              <span class="metric-label">Wind Speed</span>
+              <span class="metric-val" id="wind-val">14.5 km/h</span>
+            </div>
+          </div>
+          <div class="metric-item">
+            <i class="fa-solid fa-gauge-high metric-icon"></i>
+            <div class="metric-info">
+              <span class="metric-label">Pressure</span>
+              <span class="metric-val" id="pressure-val">1013 hPa</span>
+            </div>
+          </div>
+          <div class="metric-item">
+            <i class="fa-solid fa-sun-plant-wilt metric-icon"></i>
+            <div class="metric-info">
+              <span class="metric-label">UV Index</span>
+              <span class="metric-val" id="uv-val">5 (Moderate)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DevOps System Health & Telemetry Card -->
+      <div class="card devops-card">
+        <h3><i class="fa-solid fa-server"></i> DevOps Infrastructure Status</h3>
+        <p class="subtitle">Real-time metrics exposed via <code>/metrics</code> for Prometheus</p>
+        
+        <div class="health-badges">
+          <div class="status-box">
+            <span class="box-title">Container Status</span>
+            <span class="box-val success"><i class="fa-solid fa-circle-check"></i> Healthy</span>
+          </div>
+          <div class="status-box">
+            <span class="box-title">Kubernetes Pods</span>
+            <span class="box-val success"><i class="fa-solid fa-cubes"></i> 3/3 Ready</span>
+          </div>
+          <div class="status-box">
+            <span class="box-title">Jenkins CI Pipeline</span>
+            <span class="box-val success"><i class="fa-solid fa-code-merge"></i> Passing</span>
+          </div>
+        </div>
+
+        <div class="endpoints-list">
+          <h4>Configured Monitoring Endpoints</h4>
+          <ul>
+            <li><code>GET /api/weather</code> <span class="badge badge-green">200 OK</span></li>
+            <li><code>GET /api/health</code> <span class="badge badge-green">200 OK</span></li>
+            <li><code>GET /metrics</code> <span class="badge badge-purple">Prometheus Exporter</span></li>
+          </ul>
+        </div>
+      </div>
+    </main>
+
+    <!-- 5-Day Forecast Carousel -->
+    <section class="forecast-section">
+      <h3><i class="fa-solid fa-calendar-days"></i> 5-Day Extended Weather Forecast</h3>
+      <div class="forecast-grid" id="forecast-container">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <p>AtmosphereX DevOps Weather Engine · CSUL511 Milestone Project · Session 2026</p>
+    </footer>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
