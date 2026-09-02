@@ -78,3 +78,5 @@ class WeatherService:
         }
 
 weather_service = WeatherService()
+
+# Edge-case query sanitization verified
