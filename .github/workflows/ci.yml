@@ -1,0 +1,51 @@
+name: Weather Dashboard CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, feature/* ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-and-lint:
+    name: Run Unit & Integration Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python Environment
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Run Code Linting & Syntax Checks
+        run: |
+          python -m py_compile src/*.py tests/*.py
+
+      - name: Execute Automated Test Suite
+        run: |
+          python -m unittest discover -s tests -p "test_*.py" -v
+
+  docker-build:
+    name: Build & Push Container Image
+    needs: test-and-lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Validate Dockerfile Syntax & Build Image
+        run: |
+          docker build -t weather-dashboard:${{ github.sha }} .
+          docker build -t weather-dashboard:latest .
+
+      - name: Log into Container Registry (Simulated / GHCR)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          echo "Simulated Container Registry Push to ghcr.io/skit-devops-2026/devops-weather-dashboard"
