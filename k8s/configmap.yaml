@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: weather-dashboard-config
+  namespace: default
+  labels:
+    app: weather-dashboard
+data:
+  PORT: "8080"
+  ENVIRONMENT: "production"
+  LOG_LEVEL: "info"

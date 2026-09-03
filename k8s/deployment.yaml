@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: weather-dashboard
+  namespace: default
+  labels:
+    app: weather-dashboard
+    tier: frontend
+    course: csul511
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: weather-dashboard
+  template:
+    metadata:
+      labels:
+        app: weather-dashboard
+        tier: frontend
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+        prometheus.io/path: "/metrics"
+    spec:
+      containers:
+        - name: weather-dashboard-app
+          image: ghcr.io/skit-devops-2026/devops-weather-dashboard:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+              name: http
+          envFrom:
+            - configMapRef:
+                name: weather-dashboard-config
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "100m"
+            limits:
+              memory: "128Mi"
+              cpu: "250m"
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: 8080
+            initialDelaySeconds: 3
+            periodSeconds: 5
