@@ -95,6 +95,7 @@ class WeatherHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
         pass
 
 def run_server(port=PORT):
+    socketserver.TCPServer.allow_reuse_address = True
     with socketserver.TCPServer(("", port), WeatherHTTPRequestHandler) as httpd:
         print(f"Weather Dashboard server running on http://localhost:{port}")
         print(f"Metrics available on http://localhost:{port}/metrics")
