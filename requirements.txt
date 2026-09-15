@@ -1,0 +1,2 @@
+# Weather Dashboard Dependencies
+# Uses Python Standard Library (http.server, socketserver, unittest, json, urllib)
