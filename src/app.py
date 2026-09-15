@@ -7,12 +7,19 @@ import http.server
 import socketserver
 import json
 import urllib.parse
-import os
-import time
 import sys
+import os
 
-from src.weather_service import weather_service
-from src.metrics import metrics
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if ROOT_DIR not in sys.path:
+    sys.path.insert(0, ROOT_DIR)
+
+try:
+    from src.weather_service import weather_service
+    from src.metrics import metrics
+except ModuleNotFoundError:
+    from weather_service import weather_service
+    from metrics import metrics
 
 PORT = int(os.environ.get("PORT", 8080))
 PUBLIC_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "public")
