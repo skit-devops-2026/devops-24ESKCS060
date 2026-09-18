@@ -22,13 +22,19 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: Set up Node.js Environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
       - name: Run Code Linting & Syntax Checks
         run: |
           python -m py_compile src/*.py tests/*.py
 
-      - name: Execute Automated Test Suite
+      - name: Run test suite
         run: |
-          python -m unittest discover -s tests -p "test_*.py" -v
+          npm test
+          python3 -m unittest discover -s tests -p "test_*.py" -v
 
   docker-build:
     name: Build Container Image

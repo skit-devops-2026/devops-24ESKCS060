@@ -4,11 +4,11 @@
   "description": "Full-stack DevOps Weather Dashboard with CI/CD, Containerization, Prometheus Monitoring & Kubernetes Deployment",
   "main": "src/app.js",
   "scripts": {
-    "start": "node src/app.js",
-    "dev": "node src/app.js",
-    "test": "jest --detectOpenHandles --forceExit",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "start": "python3 src/app.py",
+    "dev": "python3 src/app.py",
+    "test": "python3 -m unittest discover -s tests -p 'test_*.py' -v",
+    "test:watch": "python3 -m unittest discover -s tests -p 'test_*.py'",
+    "test:coverage": "python3 -m unittest discover -s tests -p 'test_*.py'"
   },
   "keywords": [
     "devops",
